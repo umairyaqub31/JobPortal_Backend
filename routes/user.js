@@ -3,6 +3,7 @@ const userAuthController = require("../controller/userAuthController");
 const multer = require("multer");
 const employeeController = require("../controller/employeeController");
 const candidateController = require("../controller/candidateController");
+const uploadFileController = require("../controller/uploadFileController");
 const router = express.Router();
 // const upload = multer({ dest: "/temp" });
 const auth = require("../middlewares/auth");
@@ -28,5 +29,14 @@ router.post("/candidate/register", candidateController.register);
 router.post("/candidate/login", candidateController.login);
 router.post("/candidate/logout", auth, candidateController.logout);
 router.get("/candidate/getTopCompanies", candidateController.getTopCompanies);
+router.get("/candidate/getJobs", candidateController.getJobs);
+router.get("/candidate/searchJobs", candidateController.searchJobs);
+
+//.............uploadFile.....................
+router.post(
+  "/candidate/uploadFile",
+  upload.single("file"),
+  uploadFileController.uploadFile
+);
 
 module.exports = router;

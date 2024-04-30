@@ -244,15 +244,61 @@ const candidateController = {
           },
         },
       ]);
-      const companies = employees.map(employee=>{
+      const companies = employees.map((employee) => {
         return employee.company;
-      })
+      });
       return res.status(200).json({
         companies: companies,
         auth: true,
       });
     } catch (error) {
       next(error);
+    }
+  },
+  async getJobs(req, res, next) {
+    try {
+      const jobs = await Job.find().sort({ createdAt: -1 });
+      return res.status(200).json({
+        jobs: jobs,
+        auth: true,
+      });
+    } catch (error) {
+      next(error);
+    }
+  },
+  async searchJobs(req, res, next) {
+    try {
+      let query = {};
+  
+      // Check if jobTitle parameter is provided
+      if (req.query.jobTitle) {
+        query.jobTitle = { $regex: req.query.jobTitle, $options: 'i' };
+      }
+      
+      // Check if companyName parameter is provided
+      if (req.query.companyName) {
+        // Find employee document with matching companyName
+        const employee = await Employee.findOne({ 'company.name': req.query.companyName });
+        
+        // If employee found, filter jobs by employeeId
+        if (employee) {
+          query.employeeId = employee._id;
+          console.log(employee._id);
+        } else {
+          // If no employee found with the companyName, return empty result
+          return res.json([]);
+        }
+      }
+      // Search for jobs based on the constructed query
+      const jobs = await Job.find(query);
+      console.log(jobs);
+  
+      // Return the search results
+      res.json(jobs);
+    } catch (error) {
+      // Handle errors
+      console.error('Error searching for jobs:', error);
+      res.status(500).json({ error: 'Internal server error' });
     }
   },
 };

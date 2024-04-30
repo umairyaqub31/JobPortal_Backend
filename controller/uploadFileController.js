@@ -1,14 +1,16 @@
 const express = require("express");
 const app = express();
-const serviceAccount = require("../vaishakhi-matrimony-firebase-adminsdk-mjr6h-34a24c9c5e.json");
+
+const multer = require("multer");
 const fs = require("fs");
 const admin = require("firebase-admin");
 // admin.initializeApp({
 //     credential: admin.credential.cert(serviceAccount),
 //     storageBucket: "meditour-33ba8.appspot.com", // Replace with your actual storage bucket URL
 //   });
+const { firebase } = require("../firebase/");
 
-const bucket = admin.storage().bucket();
+const bucket = firebase.storage().bucket();
 
 const uploadFileController = {
   async uploadFile(req, res) {
@@ -16,7 +18,7 @@ const uploadFileController = {
       if (req.file) {
         const file = fs.readFileSync(req.file.path);
         const imageRef = bucket.file(
-          `User Images/${req.file.originalname}`
+          `profile_pictures/${req.file.originalname}`
         );
 
         bucket
@@ -65,6 +67,7 @@ const uploadFileController = {
       });
     }
   },
+  
 };
 
 module.exports = uploadFileController;

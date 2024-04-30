@@ -81,22 +81,6 @@ const candidateSchema = new mongoose.Schema(
         type: String,
         required: true
     },
-    profilePicture: {
-        type: String,
-        required: true
-    },
-    about: {
-        type: String,
-        required: true
-    },
-    age: {
-        type: String,
-        required: true
-    },
-    languages: {
-        type: Array,
-        required: true
-    },
   },
   {
     timestamps: true,
