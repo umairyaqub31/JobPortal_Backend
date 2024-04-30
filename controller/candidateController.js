@@ -14,6 +14,7 @@ const employee = require("../models/employee.js");
 const candidateController = {
   async register(req, res, next) {
     const candidateSchema = Joi.object({
+      phone: Joi.string().required(),
       fullName: Joi.string().required(),
       gender: Joi.string().required(),
       email: Joi.string().required(),
@@ -56,6 +57,7 @@ const candidateController = {
     }
 
     const {
+      phone,
       fullName,
       gender,
       email,
@@ -87,6 +89,7 @@ const candidateController = {
     let candidate;
     try {
       const candidateToRegister = new Candidate({
+        phone,
         fullName,
         gender,
         email,
@@ -113,7 +116,7 @@ const candidateController = {
       });
 
       candidate = await candidateToRegister.save();
-
+      console.log("ccc...", candidate);
       // token generation
       accessToken = JWTService.signAccessToken({ _id: candidate._id }, "365d");
 
@@ -140,6 +143,7 @@ const candidateController = {
   //.......................................Login..................................//
 
   async login(req, res, next) {
+    console.log("chalaa");
     const candidateLoginSchema = Joi.object({
       phone: Joi.string().required(),
     });
@@ -155,7 +159,7 @@ const candidateController = {
 
     try {
       // match username
-      candidate = await candidate.findOne({ phone: phone });
+      candidate = await Candidate.findOne({ phone: phone });
 
       if (candidate == null) {
         const error = {
@@ -269,17 +273,19 @@ const candidateController = {
   async searchJobs(req, res, next) {
     try {
       let query = {};
-  
+
       // Check if jobTitle parameter is provided
       if (req.query.jobTitle) {
-        query.jobTitle = { $regex: req.query.jobTitle, $options: 'i' };
+        query.jobTitle = { $regex: req.query.jobTitle, $options: "i" };
       }
-      
+
       // Check if companyName parameter is provided
       if (req.query.companyName) {
         // Find employee document with matching companyName
-        const employee = await Employee.findOne({ 'company.name': req.query.companyName });
-        
+        const employee = await Employee.findOne({
+          "company.name": req.query.companyName,
+        });
+
         // If employee found, filter jobs by employeeId
         if (employee) {
           query.employeeId = employee._id;
@@ -292,13 +298,13 @@ const candidateController = {
       // Search for jobs based on the constructed query
       const jobs = await Job.find(query);
       console.log(jobs);
-  
+
       // Return the search results
       res.json(jobs);
     } catch (error) {
       // Handle errors
-      console.error('Error searching for jobs:', error);
-      res.status(500).json({ error: 'Internal server error' });
+      console.error("Error searching for jobs:", error);
+      res.status(500).json({ error: "Internal server error" });
     }
   },
 };

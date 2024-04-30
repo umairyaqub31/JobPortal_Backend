@@ -1,7 +1,12 @@
+const { required } = require("joi");
 const mongoose = require("mongoose");
 
 const candidateSchema = new mongoose.Schema(
   {
+    phone: {
+      type: String,
+      required: true,
+    },
     fullName: {
       type: String,
       required: true,
@@ -62,24 +67,26 @@ const candidateSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
-    jobDetails: [{
-      role: String,
-      startDate: String,
-      currentlyWorking: Boolean,
-      endDate: String,
-      employeeType: String,
-    }],
+    jobDetails: [
+      {
+        role: String,
+        startDate: String,
+        currentlyWorking: Boolean,
+        endDate: String,
+        employeeType: String,
+      },
+    ],
     prefferedRole: {
-        type: String,
-        required: true
+      type: String,
+      required: true,
     },
     jobPreferences: {
-        type: String,
-        required: true
+      type: String,
+      required: true,
     },
     CV: {
-        type: String,
-        required: true
+      type: String,
+      required: true,
     },
   },
   {
