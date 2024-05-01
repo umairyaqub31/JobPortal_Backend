@@ -235,6 +235,29 @@ const candidateController = {
 
   async getTopCompanies(req, res, next) {
     try {
+      const page = parseInt(req.query.page) || 1; // Get the page number from the query parameter
+      const companiesPerPage = 10;
+      let totalEmployees = await Employee.aggregate([
+        {
+          $lookup: {
+            from: "jobs", // Name of the jobs collection
+            localField: "_id", // Field from the employee collection
+            foreignField: "employeeId", // Field from the jobs collection
+            as: "jobsData", // Alias for the joined data
+          },
+        },
+        {
+          $match: {
+            jobsData: { $ne: [] }, // Filter to include only documents with at least one match in jobsData
+          },
+        }
+      ]);
+      totalEmployees = totalEmployees.length;
+      console.log(totalEmployees);
+      // Get the total number of posts for the user
+      const totalPages = Math.ceil(totalEmployees / companiesPerPage); // Calculate the total number of pages
+
+      const skip = (page - 1) * companiesPerPage;
       const employees = await Employee.aggregate([
         {
           $lookup: {
@@ -249,12 +272,14 @@ const candidateController = {
             jobsData: { $ne: [] }, // Filter to include only documents with at least one match in jobsData
           },
         },
-      ]);
+      ]).skip(skip)
+      .limit(companiesPerPage);
       const companies = employees.map((employee) => {
         return employee.company;
       });
       return res.status(200).json({
         companies: companies,
+        totalCompaniesCount: totalEmployees,
         auth: true,
       });
     } catch (error) {
@@ -282,27 +307,32 @@ const candidateController = {
       }
 
       // Check if companyName parameter is provided
+      let employeeQuery = {};
       if (req.query.companyName) {
-        // Find employee document with matching companyName
-        const employee = await Employee.findOne({
-          "company.name": req.query.companyName,
-        });
+  // Apply partial search using case-insensitive regex
+  employeeQuery["company.name"] = { $regex: req.query.companyName, $options: "i" };
+}
 
-        // If employee found, filter jobs by employeeId
-        if (employee) {
-          query.employeeId = employee._id;
-          console.log(employee._id);
-        } else {
-          // If no employee found with the companyName, return empty result
-          return res.json([]);
-        }
-      }
-      // Search for jobs based on the constructed query
-      const jobs = await Job.find(query);
-      console.log(jobs);
+// Find employee documents matching the query
+const employees = await Employee.find(employeeQuery);
 
-      // Return the search results
-      res.json(jobs);
+// If no employees found, return empty result
+if (!employees || employees.length === 0) {
+  return res.json([]);
+}
+
+// Extract employeeIds from the found employees
+const employeeIds = employees.map((employee) => employee._id);
+console.log(employeeIds);
+
+// Use the extracted employeeIds to filter jobs
+query.employeeId = { $in: employeeIds };
+
+// Find jobs matching the updated query
+const jobs = await Job.find(query);
+
+// Return the found jobs
+return res.json(jobs);
     } catch (error) {
       // Handle errors
       console.error("Error searching for jobs:", error);
