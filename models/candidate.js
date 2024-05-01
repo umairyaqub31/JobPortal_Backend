@@ -67,13 +67,16 @@ const candidateSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
+
     jobDetails: [
       {
-        role: String,
-        startDate: String,
-        currentlyWorking: Boolean,
-        endDate: String,
+        jobRole: String,
+        jobStartingMonth: String,
+        jobStartingYear: String,
+        jobEndingYear: String,
+        jobEndingMonth: String,
         employeeType: String,
+        currentlyWorking: Boolean,
       },
     ],
     prefferedRole: {
