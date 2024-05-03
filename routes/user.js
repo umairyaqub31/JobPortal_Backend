@@ -29,7 +29,7 @@ router.post("/candidate/register", candidateController.register);
 router.post("/candidate/login", candidateController.login);
 router.post("/candidate/logout", auth, candidateController.logout);
 router.get("/candidate/getTopCompanies", candidateController.getTopCompanies);
-router.get("/candidate/getJobs", candidateController.getJobs);
+router.get("/candidate/getJobRoles", candidateController.getJobRoles);
 router.get("/candidate/searchJobs", candidateController.searchJobs);
 
 //.............uploadFile.....................
