@@ -170,12 +170,12 @@ const employeeController = {
       description,
     } = req.body;
 
-    const userId = req.user._id;
+    const employeeId = req.user._id;
 
     let job;
     try {
       const jobToSave = new Job({
-        userId,
+        employeeId,
         jobOpenings,
         jobRole,
         jobTitle,
@@ -206,13 +206,14 @@ const employeeController = {
       const jobsPerPage = 5;
       const userId = req.user._id;
 
-      const totalJobs = await Job.countDocuments({ userId }); // Get the total number of posts for the user
+      const totalJobs = await Job.countDocuments({ employeeId: userId }); // Get the total number of posts for the user
       const totalPages = Math.ceil(totalJobs / jobsPerPage); // Calculate the total number of pages
 
       const skip = (page - 1) * jobsPerPage; // Calculate the number of posts to skip based on the current page
 
-      console.log("id......", userId);
-      const jobs = await Job.find({ userId }).skip(skip).limit(jobsPerPage);
+      const jobs = await Job.find({ employeeId: userId })
+        .skip(skip)
+        .limit(jobsPerPage);
 
       let previousPage = page > 1 ? page - 1 : null;
       let nextPage = page < totalPages ? page + 1 : null;

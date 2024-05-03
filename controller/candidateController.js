@@ -275,11 +275,11 @@ const candidateController = {
       ])
         .skip(skip)
         .limit(companiesPerPage);
-      const companies = employees.map((employee) => {
-        return employee.company;
-      });
+      // const companies = employees.map((employee) => {
+      //   return employee.company;
+      // });
       return res.status(200).json({
-        companies: companies,
+        companies: employees,
         totalCompaniesCount: totalEmployees,
         auth: true,
       });
@@ -298,8 +298,8 @@ const candidateController = {
           },
         },
         {
-          $sort: { count: -1 } // Sort by count in descending order
-        }
+          $sort: { count: -1 }, // Sort by count in descending order
+        },
       ]);
       console.log(jobRoleCounts);
 
