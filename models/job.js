@@ -14,10 +14,6 @@ const jobSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
-    jobType: {
-      type: String,
-      required: true,
-    },
     jobRole: {
       type: String,
       required: true,

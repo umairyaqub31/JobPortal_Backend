@@ -136,7 +136,6 @@ const employeeController = {
   async postJob(req, res, next) {
     const jobSchema = Joi.object({
       jobOpenings: Joi.string().required(),
-      jobType: Joi.string().required(),
       jobRole: Joi.string().required(),
       jobTitle: Joi.string().required(),
       gender: Joi.string().required(),
@@ -158,7 +157,6 @@ const employeeController = {
 
     const {
       jobOpenings,
-      jobType,
       jobRole,
       jobTitle,
       gender,
@@ -179,7 +177,6 @@ const employeeController = {
       const jobToSave = new Job({
         userId,
         jobOpenings,
-        jobType,
         jobRole,
         jobTitle,
         gender,
