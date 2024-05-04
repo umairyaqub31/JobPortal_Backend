@@ -287,6 +287,37 @@ const candidateController = {
       next(error);
     }
   },
+  async getCompanyJobs(req, res, next) {
+    try {
+      const page = parseInt(req.query.page) || 1; // Get the page number from the query parameter
+      const jobsPerPage = 10;
+      // const vendorId = req.user._id;
+      const companyId = req.query.companyId;
+      console.log("company Id...", companyId);
+      const totalJobs = await Job.countDocuments({ employeeId: companyId }); // Get the total number of posts for the user
+      const totalPages = Math.ceil(totalJobs / jobsPerPage); // Calculate the total number of pages
+
+      const skip = (page - 1) * jobsPerPage; // Calculate the number of posts to skip based on the current page
+
+      const allJobs = await Job.find({
+        employeeId: companyId,
+      })
+        .skip(skip)
+        .limit(jobsPerPage);
+      let previousPage = page > 1 ? page - 1 : null;
+      let nextPage = page < totalPages ? page + 1 : null;
+
+      return res.status(200).json({
+        jobs: allJobs,
+        auth: true,
+        totalJobs,
+        previousPage: previousPage,
+        nextPage: nextPage,
+      });
+    } catch (error) {
+      next(error);
+    }
+  },
   async getJobRoles(req, res, next) {
     try {
       // Aggregate query to count documents with the same jobRole

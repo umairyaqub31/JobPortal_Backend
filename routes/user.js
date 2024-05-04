@@ -29,6 +29,8 @@ router.post("/candidate/register", candidateController.register);
 router.post("/candidate/login", candidateController.login);
 router.post("/candidate/logout", auth, candidateController.logout);
 router.get("/candidate/getTopCompanies", candidateController.getTopCompanies);
+router.get("/candidate/getCompanyJobs", candidateController.getCompanyJobs);
+
 router.get("/candidate/getJobRoles", candidateController.getJobRoles);
 router.get("/candidate/searchJobs", candidateController.searchJobs);
 
