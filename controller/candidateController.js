@@ -318,6 +318,22 @@ const candidateController = {
       next(error);
     }
   },
+  async getJob(req, res, next) {
+    try {
+      const jobId = req.query.jobId;
+      const job = await Job.findById(jobId);
+
+      if (!job) {
+        const error = new Error("Job not found!");
+        error.status = 404;
+        return next(error);
+      }
+      return res.status(200).json({ job });
+    } catch (error) {
+      return next(error);
+    }
+  },
+
   async getJobRoles(req, res, next) {
     try {
       // Aggregate query to count documents with the same jobRole
