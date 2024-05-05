@@ -14,6 +14,7 @@ const bucket = firebase.storage().bucket();
 
 const uploadFileController = {
   async uploadFile(req, res) {
+    console.log("hitttt......", req.file);
     try {
       if (req.file) {
         const file = fs.readFileSync(req.file.path);
@@ -67,7 +68,6 @@ const uploadFileController = {
       });
     }
   },
-  
 };
 
 module.exports = uploadFileController;

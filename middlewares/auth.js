@@ -5,7 +5,7 @@ const AccessToken = require("../models/accessToken");
 const Employee = require("../models/employee");
 
 const auth = async (req, res, next) => {
-  console.log("auth chala");
+  // console.log("auth chala");
   try {
     // 1. refresh, access token validation
     const authHeader = req.headers["authorization"];

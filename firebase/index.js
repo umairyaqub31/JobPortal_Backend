@@ -1,9 +1,9 @@
 const firebase = require("firebase-admin");
-const serviceAccount = require("../vaishakhi-matrimony-firebase-adminsdk-mjr6h-34a24c9c5e.json");
+const serviceAccount = require("../hireon-832cc-firebase-adminsdk-d4kuy-e8d345b99d.json");
 
 firebase.initializeApp({
-    credential: firebase.credential.cert(serviceAccount),
-        storageBucket: "vaishakhi-matrimony.appspot.com", // Replace with your actual storage bucket URL/
-  });
+  credential: firebase.credential.cert(serviceAccount),
+  storageBucket: "gs://hireon-832cc.appspot.com", // Replace with your actual storage bucket URL/
+});
 
-  module.exports = {firebase};
+module.exports = { firebase };

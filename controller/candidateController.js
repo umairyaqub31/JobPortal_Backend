@@ -145,7 +145,6 @@ const candidateController = {
   //.......................................Login..................................//
 
   async login(req, res, next) {
-    console.log("chalaa");
     const candidateLoginSchema = Joi.object({
       phone: Joi.string().required(),
     });
