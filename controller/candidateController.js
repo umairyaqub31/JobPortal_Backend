@@ -406,6 +406,51 @@ const candidateController = {
       res.status(500).json({ error: "Internal server error" });
     }
   },
+
+  async applyJob(req, res, next) {
+    console.log("chalaaa.....");
+    const applyJobSchema = Joi.object({
+      jobId: Joi.string().required(),
+    });
+    const { error } = applyJobSchema.validate(req.body);
+
+    if (error) {
+      return next(error);
+    }
+
+    const { jobId } = req.body;
+    const senderId = req.user._id;
+    let job;
+
+    let updatedJob;
+
+    try {
+      // match userId
+      job = await Job.findOne({ _id: jobId });
+
+      if (job == null) {
+        const error = {
+          status: 401,
+          message: "Invalid JobId",
+        };
+        return next(error);
+      } else {
+        updatedJob = await Job.findOneAndUpdate(
+          { _id: jobId },
+          { $addToSet: { applicants: senderId } },
+          { new: true } // Return the updated document
+        );
+      }
+    } catch (error) {
+      return next(error);
+    }
+
+    return res
+      .status(200)
+      .json({ message: "Interest sent successfully!", job: updatedJob });
+
+    // return res.status(200).json({ user: user, auth: true, token: accessToken });
+  },
 };
 
 module.exports = candidateController;

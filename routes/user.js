@@ -42,4 +42,6 @@ router.post(
   uploadFileController.uploadFile
 );
 
+router.post("/candidate/applyJob", auth, candidateController.applyJob);
+
 module.exports = router;

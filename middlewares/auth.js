@@ -3,9 +3,10 @@ const User = require("../models/user");
 // const Vendor = require("../models/vendor/vendor");
 const AccessToken = require("../models/accessToken");
 const Employee = require("../models/employee");
+const Candidate = require("../models/candidate");
 
 const auth = async (req, res, next) => {
-  // console.log("auth chala");
+  console.log("auth chala");
   try {
     // 1. refresh, access token validation
     const authHeader = req.headers["authorization"];
@@ -53,6 +54,19 @@ const auth = async (req, res, next) => {
     if (req.originalUrl.includes("/employee")) {
       try {
         user = await Employee.findOne({ _id: _id });
+      } catch (error) {
+        return next(error);
+      }
+
+      req.user = user;
+
+      next();
+      return;
+    }
+
+    if (req.originalUrl.includes("/candidate")) {
+      try {
+        user = await Candidate.findOne({ _id: _id });
       } catch (error) {
         return next(error);
       }
