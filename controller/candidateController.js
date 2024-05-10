@@ -44,10 +44,10 @@ const candidateController = {
       prefferedRole: Joi.string().required(),
       jobPreferences: Joi.string().required(),
       CV: Joi.string().required(),
-      // profilePicture: Joi.string().required(),
-      // about: Joi.string().required(),
-      // age: Joi.string().required(),
-      // languages: Joi.array().items(Joi.string()).required(),
+      profilePicture: Joi.string().required(),
+      about: Joi.string().required(),
+      age: Joi.string().required(),
+      languages: Joi.array().items(Joi.string()).required(),
     });
 
     const { error } = candidateSchema.validate(req.body);
@@ -77,10 +77,10 @@ const candidateController = {
       prefferedRole,
       jobPreferences,
       CV,
-      // profilePicture,
-      // about,
-      // age,
-      // languages,
+      profilePicture,
+      about,
+      age,
+      languages,
     } = req.body;
 
     let accessToken;
@@ -109,10 +109,10 @@ const candidateController = {
         prefferedRole,
         jobPreferences,
         CV,
-        // profilePicture,
-        // about,
-        // age,
-        // languages,
+        profilePicture,
+        about,
+        age,
+        languages,
       });
 
       candidate = await candidateToRegister.save();
