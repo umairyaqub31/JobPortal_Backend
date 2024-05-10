@@ -33,12 +33,10 @@ const candidateController = {
       jobDetails: Joi.array()
         .items(
           Joi.object({
-            jobRole: Joi.string(),
-            jobStartingMonth: Joi.string(),
-            jobStartingYear: Joi.string(),
+            role: Joi.string(),
+            startDate: Joi.string(),
             currentlyWorking: Joi.boolean(),
-            jobEndingYear: Joi.string(),
-            jobEndingMonth: Joi.string(),
+            endDate: Joi.string(),
             employeeType: Joi.string(),
           })
         )
