@@ -23,6 +23,7 @@ router.post("/employee/register", employeeController.register);
 router.post("/employee/login", employeeController.login);
 router.post("/employee/postJob", auth, employeeController.postJob);
 router.get("/employee/getAllJobs", auth, employeeController.getAllJobs);
+router.get("/employee/getApplicants", auth, employeeController.getApplicants);
 
 //.............candidate.....................
 router.post("/candidate/register", candidateController.register);

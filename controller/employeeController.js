@@ -4,6 +4,7 @@ const Joi = require("joi");
 const bcrypt = require("bcryptjs");
 const User = require("../models/user.js");
 const Employee = require("../models/employee.js");
+const Candidate = require("../models/candidate.js");
 const Job = require("../models/job.js");
 const JWTService = require("../services/JWTService.js");
 const RefreshToken = require("../models/token.js");
@@ -224,6 +225,45 @@ const employeeController = {
         previousPage: previousPage,
         nextPage: nextPage,
       });
+    } catch (error) {
+      return next(error);
+    }
+  },
+
+  //.......................................Get Applicants..................................//
+
+  async getApplicants(req, res, next) {
+    try {
+      const jobId = req.query.jobId;
+      const page = parseInt(req.query.page) || 1;
+      const limit = 10;
+
+      const job = await Job.findById(jobId);
+      if (!job) {
+        return res.status(404).json({ message: "Job not found" });
+      }
+
+      const totalApplicants = job.applicants.length;
+      const totalPages = Math.ceil(totalApplicants / limit);
+
+      const startIndex = (page - 1) * limit;
+      const endIndex = page * limit;
+
+      const applicants = await Candidate.find({
+        _id: { $in: job.applicants },
+      })
+        .skip(startIndex)
+        .limit(limit);
+
+      const result = {
+        job,
+        totalApplicants,
+        totalPages,
+        currentPage: page,
+        applicants,
+      };
+
+      return res.status(200).json(result);
     } catch (error) {
       return next(error);
     }
