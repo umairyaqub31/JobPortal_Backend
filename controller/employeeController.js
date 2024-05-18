@@ -269,6 +269,55 @@ const employeeController = {
     }
   },
 
+  async jobSearch(req, res, next) {
+    try {
+      const page = parseInt(req.query.page) || 1; // Get the page number from the query parameter
+      const jobsPerPage = 10;
+      const search = req.query.search;
+
+      const query = {
+        // status: "pending",
+      };
+
+      let totalJobs = await Job.countDocuments(query);
+
+      const totalPages = Math.ceil(totalJobs / jobsPerPage);
+
+      const skip = (page - 1) * jobsPerPage;
+
+      let allJobs = await Job.find(query)
+        .sort({ createdAt: -1 })
+        .skip(skip)
+        .limit(jobsPerPage)
+        .exec();
+
+      // const appointmentRequests = await AppointmentRequest.find({})
+      // .populate('patientId')
+      // .exec();
+
+      // Filter appointment requests where mrNo matches
+      if (search) {
+        console.log("working");
+        const filteredJobs = allJobs.filter((appointment) => {
+          return appointment.patientId.mrNo === mrNo; // update according to search
+        });
+        allJobs = filteredJobs;
+        totalJobs = filteredJobs.length;
+      }
+
+      return res.status(200).json({
+        jobs: allJobs,
+        jobsLength: totalJobs,
+        auth: true,
+      });
+    } catch (error) {
+      res.status(500).json({
+        status: "Failure",
+        error: error.message,
+      });
+    }
+  },
+
   //.......................................Logout..................................//
 
   async logout(req, res, next) {
