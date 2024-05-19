@@ -44,5 +44,6 @@ router.post(
 );
 
 router.post("/candidate/applyJob", auth, candidateController.applyJob);
+router.get("/candidate/search", candidateController.search);
 
 module.exports = router;

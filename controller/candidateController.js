@@ -359,6 +359,51 @@ const candidateController = {
       next(error);
     }
   },
+
+  async search(req, res, next) {
+    try {
+      const company = req.query.company;
+      const role = req.query.role;
+
+      const query = {
+        // status: "pending",
+      };
+
+      let allEmployees = await Employee.find(query).exec();
+
+      let allJobs = await Job.find(query).exec();
+
+      // const appointmentRequests = await AppointmentRequest.find({})
+      // .populate('patientId')
+      // .exec();
+
+      // Filter appointment requests where mrNo matches
+      if (company) {
+        const filteredJobs = allEmployees.filter((employee) =>
+          employee.company.name.toLowerCase().includes(company.toLowerCase())
+        );
+        allEmployees = filteredJobs;
+      }
+
+      if (role) {
+        const filteredJobs = allJobs.filter((job) =>
+          job.jobRole.toLowerCase().includes(role.toLowerCase())
+        );
+        allEmployees = filteredJobs;
+      }
+
+      return res.status(200).json({
+        results: allEmployees,
+
+        auth: true,
+      });
+    } catch (error) {
+      res.status(500).json({
+        status: "Failure",
+        error: error.message,
+      });
+    }
+  },
   async searchJobs(req, res, next) {
     try {
       let query = {};
