@@ -290,7 +290,6 @@ const candidateController = {
       const jobsPerPage = 10;
       // const vendorId = req.user._id;
       const companyId = req.query.companyId;
-      console.log("company Id...", companyId);
       const totalJobs = await Job.countDocuments({ employeeId: companyId }); // Get the total number of posts for the user
       const totalPages = Math.ceil(totalJobs / jobsPerPage); // Calculate the total number of pages
 
@@ -404,51 +403,83 @@ const candidateController = {
       });
     }
   },
-  async searchJobs(req, res, next) {
+  async searchJobsByRole(req, res, next) {
     try {
-      let query = {};
+      // const companyId = req.query.companyId;
+      const role = req.query.role;
 
-      // Check if jobTitle parameter is provided
-      if (req.query.jobTitle) {
-        query.jobTitle = { $regex: req.query.jobTitle, $options: "i" };
+      const query = {
+        // status: "pending",
+      };
+
+      let jobs;
+
+      let allJobs = await Job.find(query).exec();
+
+      if (role) {
+        const filteredJobs = allJobs.filter((job) =>
+          job.jobRole.toLowerCase().includes(role.toLowerCase())
+        );
+        jobs = filteredJobs;
       }
 
-      // Check if companyName parameter is provided
-      let employeeQuery = {};
-      if (req.query.companyName) {
-        // Apply partial search using case-insensitive regex
-        employeeQuery["company.name"] = {
-          $regex: req.query.companyName,
-          $options: "i",
-        };
-      }
+      return res.status(200).json({
+        results: jobs,
 
-      // Find employee documents matching the query
-      const employees = await Employee.find(employeeQuery);
-
-      // If no employees found, return empty result
-      if (!employees || employees.length === 0) {
-        return res.json([]);
-      }
-
-      // Extract employeeIds from the found employees
-      const employeeIds = employees.map((employee) => employee._id);
-      console.log(employeeIds);
-
-      // Use the extracted employeeIds to filter jobs
-      query.employeeId = { $in: employeeIds };
-
-      // Find jobs matching the updated query
-      const jobs = await Job.find(query);
-
-      // Return the found jobs
-      return res.json(jobs);
+        auth: true,
+      });
     } catch (error) {
-      // Handle errors
-      console.error("Error searching for jobs:", error);
-      res.status(500).json({ error: "Internal server error" });
+      res.status(500).json({
+        status: "Failure",
+        error: error.message,
+      });
     }
   },
+  // async searchJobs(req, res, next) {
+  //   try {
+  //     let query = {};
+
+  //     // Check if jobTitle parameter is provided
+  //     if (req.query.jobTitle) {
+  //       query.jobTitle = { $regex: req.query.jobTitle, $options: "i" };
+  //     }
+
+  //     // Check if companyName parameter is provided
+  //     let employeeQuery = {};
+  //     if (req.query.companyName) {
+  //       // Apply partial search using case-insensitive regex
+  //       employeeQuery["company.name"] = {
+  //         $regex: req.query.companyName,
+  //         $options: "i",
+  //       };
+  //     }
+
+  //     // Find employee documents matching the query
+  //     const employees = await Employee.find(employeeQuery);
+
+  //     // If no employees found, return empty result
+  //     if (!employees || employees.length === 0) {
+  //       return res.json([]);
+  //     }
+
+  //     // Extract employeeIds from the found employees
+  //     const employeeIds = employees.map((employee) => employee._id);
+  //     console.log(employeeIds);
+
+  //     // Use the extracted employeeIds to filter jobs
+  //     query.employeeId = { $in: employeeIds };
+
+  //     // Find jobs matching the updated query
+  //     const jobs = await Job.find(query);
+
+  //     // Return the found jobs
+  //     return res.json(jobs);
+  //   } catch (error) {
+  //     // Handle errors
+  //     console.error("Error searching for jobs:", error);
+  //     res.status(500).json({ error: "Internal server error" });
+  //   }
+  // },
 
   async applyJob(req, res, next) {
     console.log("chalaaa.....");

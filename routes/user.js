@@ -34,7 +34,7 @@ router.get("/candidate/getCompanyJobs", candidateController.getCompanyJobs);
 router.get("/candidate/getJob", candidateController.getJob);
 
 router.get("/candidate/getJobRoles", candidateController.getJobRoles);
-router.get("/candidate/searchJobs", candidateController.searchJobs);
+router.get("/candidate/searchJobsByRole", candidateController.searchJobsByRole);
 
 //.............uploadFile.....................
 router.post(
