@@ -205,16 +205,14 @@ const employeeController = {
     try {
       const page = parseInt(req.query.page) || 1; // Get the page number from the query parameter
       const jobsPerPage = 5;
-      const userId = req.user._id;
+      // const userId = req.user._id;
 
-      const totalJobs = await Job.countDocuments({ employeeId: userId }); // Get the total number of posts for the user
+      const totalJobs = await Job.countDocuments({}); // Get the total number of posts for the user
       const totalPages = Math.ceil(totalJobs / jobsPerPage); // Calculate the total number of pages
 
       const skip = (page - 1) * jobsPerPage; // Calculate the number of posts to skip based on the current page
 
-      const jobs = await Job.find({ employeeId: userId })
-        .skip(skip)
-        .limit(jobsPerPage);
+      const jobs = await Job.find({}).skip(skip).limit(jobsPerPage);
 
       let previousPage = page > 1 ? page - 1 : null;
       let nextPage = page < totalPages ? page + 1 : null;
